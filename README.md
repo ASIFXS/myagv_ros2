@@ -21,7 +21,7 @@ Create workspace and clone the repository.
 ```bash
 mkdir ~/myagv_ros2/src
 cd ~/myagv_ros2/src
-git clone -b jazzy-Pi5 https://github.com/elephantrobotics/myagv_ros2.git
+git clone -b galactic-JN https://github.com/elephantrobotics/myagv_ros2.git
 ```
 
 Install dependencies and build workspace
