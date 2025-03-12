@@ -19,9 +19,7 @@ You need to have previously installed ROS2.
 Create workspace and clone the repository.
 
 ```bash
-mkdir ~/myagv_ros2/src
-cd ~/myagv_ros2/src
-git clone -b galactic-JN https://github.com/elephantrobotics/myagv_ros2.git
+git clone -b galactic-JN https://github.com/elephantrobotics/myagv_ros2.git myagv_ros2/src
 ```
 
 Install dependencies and build workspace
@@ -37,3 +35,12 @@ Setup the workspace
 ```
 source ~/myagv_ros2/install/local_setup.bash
 ```
+
+# Update to new version
+```
+cd ~/myagv_ros2/src
+git pull
+cd ..
+colcon build --symlink-install
+```
+
