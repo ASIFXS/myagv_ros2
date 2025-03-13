@@ -49,13 +49,13 @@ bool MyAGV::init()
     sp.set_option(boost::asio::serial_port::stop_bits(boost::asio::serial_port::stop_bits::one));
     sp.set_option(boost::asio::serial_port::character_size(8));
     clearSerialBuffer();
-    ros::Time::init();
+    rclcpp::Time::init();
 
-    lastTime = ros::Time::now();
-    pub_imu =  n.advertise<sensor_msgs::Imu>("imu", 20);
-    pub_odom = n.advertise<nav_msgs::Odometry>("odom", 50); // used to be 50
-    pub_voltage = n.advertise<std_msgs::Float32>("voltage", 10);
-    pub_voltage_backup = n.advertise<std_msgs::Float32>("voltage_backup", 10);
+    lastTime = rclcpp::Node::now();
+    pub_imu =  create_publisher<sensor_msgs::msg::Imu>("imu", 20);
+    pub_odom = create_publisher<nav_msgs::msg::Odometry>("odom", 50); // used to be 50  
+    pub_voltage = create_publisher<std_msgs::msg::Float32>("voltage", 10);
+    pub_voltage_backup = create_publisher<std_msgs::msg::Float32>("voltage_backup", 10);
     restore(); //first restore,abort current err,don't restore
     return true;
 }
@@ -246,10 +246,10 @@ void MyAGV::Publish_Voltage()
 {
     std_msgs::Float32 voltage_msg,voltage_backup_msg;
     voltage_msg.data = Battery_voltage;
-    pub_voltage.publish(voltage_msg);
+    pub_voltage->publish(voltage_msg);
 
     voltage_backup_msg.data = Backup_Battery_voltage;
-    pub_voltage_backup.publish(voltage_backup_msg);
+    pub_voltage_backup->publish(voltage_backup_msg);
 
 }
 
@@ -257,7 +257,7 @@ void MyAGV::publisherImuSensor()
 {
     sensor_msgs::Imu ImuSensor;
 
-    ImuSensor.header.stamp = ros::Time::now(); 
+    ImuSensor.header.stamp = rclcpp::Node::now(); 
     ImuSensor.header.frame_id = "imu_link";
 
     tf::Quaternion qua;
@@ -284,13 +284,13 @@ void MyAGV::publisherImuSensor()
     ImuSensor.angular_velocity_covariance[4] = 1e6;
     ImuSensor.angular_velocity_covariance[8] = 1e-6;
 
-    pub_imu.publish(ImuSensor); 
+    pub_imu->publish(ImuSensor); 
 }
 
 void MyAGV::publisherOdom(double dt)
 {   
     geometry_msgs::TransformStamped odom_trans;
-    odom_trans.header.stamp = ros::Time::now();
+    odom_trans.header.stamp = rclcpp::Node::now();
     odom_trans.header.frame_id = "odom";
     odom_trans.child_frame_id = "base_footprint";
 
@@ -314,7 +314,7 @@ void MyAGV::publisherOdom(double dt)
     //odomBroadcaster.sendTransform(odom_trans);    // robot_pose_ekf ros package instead
 
     nav_msgs::Odometry msgl;
-    msgl.header.stamp = ros::Time::now();
+    msgl.header.stamp = rclcpp::Node::now();
     msgl.header.frame_id = "odom";
 
     msgl.pose.pose.position.x = x;
@@ -329,12 +329,12 @@ void MyAGV::publisherOdom(double dt)
     msgl.twist.twist.angular.z = vtheta;
     msgl.twist.covariance = odom_twist_covariance;
 
-    pub_odom.publish(msgl);
+    pub_odom->publish(msgl);
 }
 
 void MyAGV::execute(double linearX, double linearY, double angularZ)
 {   
-    currentTime = ros::Time::now();    
+    currentTime = rclcpp::Node::now();    
     double dt = (currentTime - lastTime).toSec();
     if (true ==  readSpeed()) 
     {    

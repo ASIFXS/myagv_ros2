@@ -1,37 +1,46 @@
 #include "myagv_odometry/myAGV.h"
+
+#include "rclcpp/rclcpp.hpp"
+#include "geometry_msgs/msg/twist.hpp"
 #include <iostream>
+#include <cstring> 
 
 double linearX = 0.0;
 double linearY = 0.0;
 double angularZ = 0.0;
 
-void cmdCallback(const geometry_msgs::Twist& msg)
+//using namespace std;
+
+void cmdCallback(const geometry_msgs::msg::Twist::SharedPtr msg)
 {
-	linearX = msg.linear.x;
-	linearY = msg.linear.y;
-	angularZ = msg.angular.z;
-//	std:: "cmdCallback: " << msg.linear.x << ", linearX: " << linearX << ", linearY: " << linearY <<", angularZ: " << angularZ <<std::endl;
+    linearX = msg->linear.x;
+    linearY = msg->linear.y;
+    angularZ = msg->angular.z;
+    //RCLCPP_INFO(rclcpp::get_logger("myagv_odometry_node"), "cmdCallback: linearX: %.2f, linearY: %.2f, angularZ: %.2f", linearX, linearY, angularZ);
 }
 
 int main(int argc, char* argv[])
 {
-	ros::init(argc, argv, "myagv_odometry_node");
-	ros::NodeHandle n;
-	MyAGV myAGV;
+    rclcpp::init(argc, argv);
+    auto node = std::make_shared<MyAGV>("myagv_odometry_node");
+    MyAGV myAGV;
 
-	if (!myAGV.init())
-		ROS_ERROR("myAGV initialized failed!");
-	ROS_INFO("myAGV initialized successful!");
-	
-	ros::Subscriber sub = n.subscribe("cmd_vel", 50, cmdCallback);
-	ros::Rate loop_rate(100);
-	
-	while (ros::ok())
-	{
-		ros::spinOnce();
-		myAGV.execute(linearX, linearY, angularZ);
-		loop_rate.sleep();
-	}
+    if (!myAGV.init()) {
+        RCLCPP_ERROR(node->get_logger(), "myAGV initialized failed!");
+        return 1;
+    }
+    RCLCPP_INFO(node->get_logger(), "myAGV initialized successful!");
 
-	return 0;
+    auto sub = node->create_subscription<geometry_msgs::msg::Twist>("cmd_vel", 50, cmdCallback);
+    rclcpp::Rate loop_rate(100);
+
+    while (rclcpp::ok()) {
+        rclcpp::spin_some(node);
+        myAGV.execute(linearX, linearY, angularZ);
+        //RCLCPP_INFO(node->get_logger(), "myAGV initialized successful!");
+        loop_rate.sleep();
+    }
+
+    rclcpp::shutdown();
+    return 0;
 }
