@@ -11,11 +11,17 @@ find_package(rclcpp REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(Boost REQUIRED)
+find_package(nav_msgs REQUIRED)
+
+include_directories(
+  include
+)
 
 add_executable(myagv_odometry_node
                src/myAGV.cpp
                src/myAGVSub.cpp)
-ament_target_dependencies(myagv_odometry_node rclcpp tf2 sensor_msgs geometry_msgs)
+ament_target_dependencies(myagv_odometry_node rclcpp tf2 sensor_msgs geometry_msgs nav_msgs)
 
 install(TARGETS
   myagv_odometry_node

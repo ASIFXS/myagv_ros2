@@ -23,9 +23,9 @@ int main(int argc, char* argv[])
 {
     rclcpp::init(argc, argv);
     auto node = std::make_shared<MyAGV>("myagv_odometry_node");
-    MyAGV myAGV;
+    //MyAGV myAGV;
 
-    if (!myAGV.init()) {
+    if (!node->init()) {
         RCLCPP_ERROR(node->get_logger(), "myAGV initialized failed!");
         return 1;
     }
@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
 
     while (rclcpp::ok()) {
         rclcpp::spin_some(node);
-        myAGV.execute(linearX, linearY, angularZ);
+        node->execute(linearX, linearY, angularZ);
         //RCLCPP_INFO(node->get_logger(), "myAGV initialized successful!");
         loop_rate.sleep();
     }

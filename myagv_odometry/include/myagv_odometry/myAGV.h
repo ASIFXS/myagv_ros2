@@ -9,18 +9,21 @@
 #include <std_msgs/msg/float32.hpp>
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2_ros/transform_broadcaster.h>
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <boost/asio.hpp>
 #include <chrono>
 #include <memory>
+#include <boost/array.hpp>
 
 #define twoKpDef	1.0f				// (2.0f * 0.5f)	// 2 * proportional gain
 #define twoKiDef	0.0f				// (2.0f * 0.0f)	// 2 * integral gain
 #define TOTAL_RECEIVE_SIZE 43         	// 43 RECEIVE_SIZE //The length of the data sent by the esp32
 #define OFFSET_COUNT 	200
 
-class MyAGV :public rclcpp::Node{
+class MyAGV : public rclcpp::Node{
 public:
-    MyAGV(std::shared_ptr<rclcpp::Node> node);
+    MyAGV(const std::string &node_name = "myagv_odometry_node");
 	~MyAGV();
 	bool init();
 	void execute(double linearX, double linearY, double angularZ);
@@ -37,13 +40,13 @@ private:
 
 	bool initialized = false;
 
-	double x;
-	double y;
-	double theta;
+	double x= 0.0;
+	double y= 0.0;
+	double theta= 0.0;
 
-	double vx;
-	double vy;
-	double vtheta;
+	double vx= 0.0;
+	double vy= 0.0;
+	double vtheta= 0.0;
 
 	double ax;
 	double ay;

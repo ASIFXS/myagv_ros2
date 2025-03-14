@@ -10,14 +10,14 @@ const unsigned char header[2] = { 0xfe, 0xfe };
 boost::asio::io_service iosev;
 boost::asio::serial_port sp(iosev, "/dev/ttyS0");
 
-boost::array<double, 36> odom_pose_covariance = {
+std::array<double, 36> odom_pose_covariance = {
     {1e-9, 0, 0, 0, 0, 0,
     0, 1e-3, 1e-9, 0, 0, 0,
     0, 0, 1e6, 0, 0, 0,
     0, 0, 0, 1e6, 0, 0,
     0, 0, 0, 0, 1e6, 0,
     0, 0, 0, 0, 0, 1e-9} };
-boost::array<double, 36> odom_twist_covariance = {
+std::array<double, 36> odom_twist_covariance = {
     {1e-9, 0, 0, 0, 0, 0,
     0, 1e-3, 1e-9, 0, 0, 0,
     0, 0, 1e6, 0, 0, 0,
@@ -25,16 +25,11 @@ boost::array<double, 36> odom_twist_covariance = {
     0, 0, 0, 0, 1e6, 0,
     0, 0, 0, 0, 0, 1e-9} };
 
-MyAGV::MyAGV()
+MyAGV::MyAGV(const std::string &node_name) : Node(node_name)
 {
-    x = 0.0;
-    y = 0.0;
-    theta = 0.0;
 
-    vx = 0.0;
-    vy = 0.0;
-    vtheta = 0.0;
 }
+
 
 MyAGV::~MyAGV()
 {
@@ -49,9 +44,9 @@ bool MyAGV::init()
     sp.set_option(boost::asio::serial_port::stop_bits(boost::asio::serial_port::stop_bits::one));
     sp.set_option(boost::asio::serial_port::character_size(8));
     clearSerialBuffer();
-    rclcpp::Time::init();
+    //rclcpp::Time::init();
 
-    lastTime = rclcpp::Node::now();
+    lastTime = this->get_clock()->now();;
     pub_imu =  create_publisher<sensor_msgs::msg::Imu>("imu", 20);
     pub_odom = create_publisher<nav_msgs::msg::Odometry>("odom", 50); // used to be 50  
     pub_voltage = create_publisher<std_msgs::msg::Float32>("voltage", 10);
@@ -110,8 +105,7 @@ void MyAGV::clearSerialBuffer()
 
 bool MyAGV::readSpeed()
 {
-    int i, length = 0, count = 0;
-    unsigned char checkSum;
+    int count = 0;
     unsigned char buf_header[1] = {0};
     unsigned char buf[TOTAL_RECEIVE_SIZE] = {0};
 
@@ -147,14 +141,16 @@ bool MyAGV::readSpeed()
         for (int i = 0; i < 4; ++i) {
             if (buf[i] == 1) {
                 wheel_num = i+1;
-                ROS_ERROR("ERROR %d wheel current > 2000", wheel_num);
+                //ROS_ERROR("ERROR %d wheel current > 2000", wheel_num);
+                RCLCPP_ERROR(this->get_logger(),"ERROR %d wheel current > 2000", wheel_num);
             }
         }
         restoreRun();
         return false;
     }
     if (ret != TOTAL_RECEIVE_SIZE) {
-        ROS_ERROR("Read error %zu",ret);
+        //ROS_ERROR("Read error %zu",ret);
+        RCLCPP_ERROR(this->get_logger(),"Read error %zu",ret);
         return false;
     }
 
@@ -164,7 +160,8 @@ bool MyAGV::readSpeed()
         check += buf[index + i];
     if (check % 256 != buf[index + (TOTAL_RECEIVE_SIZE-1)])
     {
-        ROS_ERROR("Error:Serial port verification failed! check:%d -- %d ",check,buf[index+(TOTAL_RECEIVE_SIZE-1)]);	
+        //ROS_ERROR("Error:Serial port verification failed! check:%d -- %d ",check,buf[index+(TOTAL_RECEIVE_SIZE-1)]);	
+        RCLCPP_ERROR(this->get_logger(),"Error:Serial port verification failed! check:%d -- %d ",check,buf[index+(TOTAL_RECEIVE_SIZE-1)]);
         return false;
     }
 
@@ -244,7 +241,7 @@ void MyAGV::writeSpeed(double movex, double movey, double rot)
 
 void MyAGV::Publish_Voltage()
 {
-    std_msgs::Float32 voltage_msg,voltage_backup_msg;
+    std_msgs::msg::Float32 voltage_msg,voltage_backup_msg;
     voltage_msg.data = Battery_voltage;
     pub_voltage->publish(voltage_msg);
 
@@ -255,12 +252,12 @@ void MyAGV::Publish_Voltage()
 
 void MyAGV::publisherImuSensor()
 {
-    sensor_msgs::Imu ImuSensor;
+    sensor_msgs::msg::Imu ImuSensor;
 
-    ImuSensor.header.stamp = rclcpp::Node::now(); 
+    ImuSensor.header.stamp = this->get_clock()->now();; 
     ImuSensor.header.frame_id = "imu_link";
 
-    tf::Quaternion qua;
+    tf2::Quaternion qua;
     qua.setRPY(0, 0, yaw * M_PI / 180.0);
 
     ImuSensor.orientation.x = qua[0]; 
@@ -289,15 +286,18 @@ void MyAGV::publisherImuSensor()
 
 void MyAGV::publisherOdom(double dt)
 {   
-    geometry_msgs::TransformStamped odom_trans;
-    odom_trans.header.stamp = rclcpp::Node::now();
+    geometry_msgs::msg::TransformStamped odom_trans;
+    odom_trans.header.stamp = this->get_clock()->now();
     odom_trans.header.frame_id = "odom";
     odom_trans.child_frame_id = "base_footprint";
 
-    geometry_msgs::Quaternion odom_quat;
+    geometry_msgs::msg::Quaternion odom_quat;
 
     theta = accumulated_theta * M_PI / 180.0;
-    odom_quat = tf::createQuaternionMsgFromYaw(theta);
+
+    tf2::Quaternion quat;
+    quat.setRPY(0.0, 0.0, theta);
+    odom_quat = tf2::toMsg(quat);
 
     double delta_x = (vx * cos(theta) - vy * sin(theta)) * dt;
     double delta_y = (vx * sin(theta) + vy * cos(theta)) * dt;
@@ -313,29 +313,29 @@ void MyAGV::publisherOdom(double dt)
 
     //odomBroadcaster.sendTransform(odom_trans);    // robot_pose_ekf ros package instead
 
-    nav_msgs::Odometry msgl;
-    msgl.header.stamp = rclcpp::Node::now();
-    msgl.header.frame_id = "odom";
+    nav_msgs::msg::Odometry odom;
+    odom.header.stamp = this->get_clock()->now();;
+    odom.header.frame_id = "odom";
+    odom.child_frame_id = "base_footprint";
 
-    msgl.pose.pose.position.x = x;
-    msgl.pose.pose.position.y = y;
-    msgl.pose.pose.position.z = 0.0;
-    msgl.pose.pose.orientation = odom_quat;
-    msgl.pose.covariance = odom_pose_covariance;
+    odom.pose.pose.position.x = x;
+    odom.pose.pose.position.y = y;
+    odom.pose.pose.position.z = 0.0;
+    odom.pose.pose.orientation = odom_quat;
+    odom.pose.covariance = odom_pose_covariance;
 
-    msgl.child_frame_id = "base_footprint";
-    msgl.twist.twist.linear.x = vx;
-    msgl.twist.twist.linear.y = vy;
-    msgl.twist.twist.angular.z = vtheta;
-    msgl.twist.covariance = odom_twist_covariance;
+    odom.twist.twist.linear.x = vx;
+    odom.twist.twist.linear.y = vy;
+    odom.twist.twist.angular.z = vtheta;
+    odom.twist.covariance = odom_twist_covariance;
 
-    pub_odom->publish(msgl);
+    pub_odom->publish(odom);
 }
 
 void MyAGV::execute(double linearX, double linearY, double angularZ)
 {   
-    currentTime = rclcpp::Node::now();    
-    double dt = (currentTime - lastTime).toSec();
+    currentTime = this->get_clock()->now();   
+    double dt = (currentTime - lastTime).seconds();
     if (true ==  readSpeed()) 
     {    
         writeSpeed(linearX, linearY, angularZ);
