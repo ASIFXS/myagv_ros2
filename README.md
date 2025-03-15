@@ -5,11 +5,11 @@ ROS2 packages for myAGV
 
 - [ ] myagv_description
 - [ ] myagv_navigation2
-- [ ] myagv_teleop
-- [ ] myagv_odometry
+- [x] myagv_teleop
+- [x] myagv_odometry
 - [ ] myagv_cartographer
 - [ ] navigation2
-- [ ] ydlidar_ros2_driver
+- [x] ydlidar_ros2_driver
 - [ ] Gazebo simulation
 
 # Installation
