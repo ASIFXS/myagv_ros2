@@ -43,15 +43,9 @@ def generate_launch_description():
             arguments=['0', '0', '0', '0', '3.14159', '3.14159', '/base_footprint', '/imu_link']
         ),
 
-        Node(
-            package='ydlidar_ros_driver',
-            executable='X2',
-            name='X2_launch'
-        ),
-
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource([os.path.join(
                 get_package_share_directory('ydlidar_ros2_driver'),'launch'),
-                'ydlidar_launch.py'])
+                '/ydlidar_launch.py'])
         )
     ])
