@@ -311,7 +311,7 @@ void MyAGV::publisherOdom(double dt)
 
     odom_trans.transform.rotation = odom_quat;
 
-    //odomBroadcaster.sendTransform(odom_trans);    // robot_pose_ekf ros package instead
+    odomBroadcaster->sendTransform(odom_trans);
 
     nav_msgs::msg::Odometry odom;
     odom.header.stamp = this->get_clock()->now();;
