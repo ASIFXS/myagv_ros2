@@ -46,7 +46,8 @@ bool MyAGV::init()
     clearSerialBuffer();
     //rclcpp::Time::init();
 
-    lastTime = this->get_clock()->now();;
+    lastTime = this->get_clock()->now();
+    odomBroadcaster = std::make_unique<tf2_ros::TransformBroadcaster>(this);
     pub_imu =  create_publisher<sensor_msgs::msg::Imu>("imu", 20);
     pub_odom = create_publisher<nav_msgs::msg::Odometry>("odom", 50); // used to be 50  
     pub_voltage = create_publisher<std_msgs::msg::Float32>("voltage", 10);
