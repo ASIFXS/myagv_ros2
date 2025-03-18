@@ -8,6 +8,8 @@ if(NOT OpenCV_FOUND)
 endif()
 message(STATUS "Found OpenCV version ${OpenCV_VERSION}")
 
+set(cv_bridge_DIR /usr/local/cv_bridge_galactic/usr/local/share/cv_bridge/cmake)
+
 find_package(image_transport REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(ament_cmake REQUIRED)
