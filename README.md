@@ -29,22 +29,13 @@ cd ~/myagv_ros2
 rosdep install --from-paths src --ignore-src -r -y
 ```
 ```
-sudo apt install ros-galactic-bondcpp -y
-
-sudo apt install ros-galactic-test-msgs* -y
-
-sudo apt install ros-galactic-behaviortree-cpp-v3* -y
-
-sudo apt install ros-galactic-ompl -y
-
-sudo apt install ros-galactic-rosconsole -y
-
-sudo apt install ros-galactic-joint-state-publisher -y
-
-sudo apt install ros-galactic-rqt-tf-tree -y
-
-sudo apt install ros-galactic-camera-info-manager -y
-
+sudo apt install ros-galactic-bondcpp \
+    ros-galactic-test-msgs* \
+    ros-galactic-behaviortree-cpp-v3* \
+    ros-galactic-ompl \
+    ros-galactic-joint-state-publisher \
+    ros-galactic-rqt-tf-tree \
+    ros-galactic-camera-info-manager -y
 ```
 
 Build workspace
