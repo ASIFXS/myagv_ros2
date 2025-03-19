@@ -22,12 +22,36 @@ Create workspace and clone the repository.
 git clone -b galactic-JN https://github.com/elephantrobotics/myagv_ros2.git myagv_ros2/src
 ```
 
-Install dependencies and build workspace
+Install dependencies
 ```
 cd ~/myagv_ros2
-sudo rosdep init
-rosdep update
+
 rosdep install --from-paths src --ignore-src -r -y
+```
+```
+sudo apt install ros-galactic-bondcpp -y
+
+sudo apt install ros-galactic-test-msgs* -y
+
+sudo apt install ros-galactic-behaviortree-cpp-v3* -y
+
+sudo apt install ros-galactic-ompl -y
+
+sudo apt install ros-galactic-rosconsole -y
+
+sudo apt install ros-galactic-joint-state-publisher -y
+
+sudo apt install ros-galactic-rqt-tf-tree -y
+
+sudo apt install ros-galactic-camera-info-manager -y
+
+```
+
+Build workspace
+
+```
+cd ~/myagv_ros2
+
 colcon build --symlink-install
 ```
 
@@ -39,8 +63,11 @@ source ~/myagv_ros2/install/local_setup.bash
 # Update to new version
 ```
 cd ~/myagv_ros2/src
+
 git pull
+
 cd ..
+
 colcon build --symlink-install
 ```
 
