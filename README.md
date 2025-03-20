@@ -35,6 +35,7 @@ sudo apt install ros-galactic-bondcpp \
     ros-galactic-ompl \
     ros-galactic-joint-state-publisher \
     ros-galactic-rqt-tf-tree \
+    ros-galactic-diagnostic-updater \
     ros-galactic-camera-info-manager -y
 ```
 
