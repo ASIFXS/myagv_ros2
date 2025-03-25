@@ -312,7 +312,7 @@ void MyAGV::publisherOdom(double dt)
 
     odom_trans.transform.rotation = odom_quat;
 
-    odomBroadcaster->sendTransform(odom_trans);
+    // odomBroadcaster->sendTransform(odom_trans); // Use the Robot Localization ros package instead.
 
     nav_msgs::msg::Odometry odom;
     odom.header.stamp = this->get_clock()->now();;

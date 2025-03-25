@@ -2,7 +2,7 @@ import os
 from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch.actions import IncludeLaunchDescription
-from launch.substitutions import ThisLaunchFileDir
+from launch.substitutions import LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
 
@@ -51,6 +51,14 @@ def generate_launch_description():
             executable='static_transform_publisher',
             name='base2imu_link',
             arguments=['0', '0', '0', '0', '3.14159', '3.14159', '/base_footprint', '/imu_link']
+        ),
+
+        Node(
+            package='robot_localization',
+            executable='ekf_node',
+            name='ekf_node',
+            output='screen',
+            parameters=[os.path.join(get_package_share_directory('myagv_odometry'), 'config/ekf.yaml')]
         ),
 
         IncludeLaunchDescription(
