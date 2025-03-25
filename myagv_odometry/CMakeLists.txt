@@ -29,7 +29,7 @@ install(TARGETS
   DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY
-  launch
+  src launch rviz config
   DESTINATION share/${PROJECT_NAME}/
 )
 
