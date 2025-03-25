@@ -4,7 +4,7 @@
     <link name="base_footprint">
         <visual>
         <geometry>
-            <mesh filename="package://myagv_urdf/meshes/myagv_base.dae" scale="1 1 1"/>
+            <mesh filename="package://myagv_description/meshes/myagv_base.dae" scale="1 1 1"/>
         </geometry>
         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
         <material name="black">
@@ -23,7 +23,7 @@
     <link name="base_link">
         <visual>
         <geometry>
-            <mesh filename="package://myagv_urdf/meshes/myagv_up.dae" scale="1 1 1"/>
+            <mesh filename="package://myagv_description/meshes/myagv_up.dae" scale="1 1 1"/>
         </geometry>
         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
         <material name="black">
