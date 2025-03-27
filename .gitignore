@@ -1,6 +1,7 @@
 .history/
 .vscode/
 build/
-devel/
+install/
+log/
 /CMakeLists.txt
 __pycache__/
