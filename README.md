@@ -3,12 +3,14 @@ ROS2 packages for myAGV
 
 # Checklist
 
-- [ ] myagv_description
-- [ ] myagv_navigation2
-- [x] myagv_teleop
+- [x] myagv_description
+- [x] myagv_navigation2
+- [x] teleop_twist_keyboard
 - [x] myagv_odometry
 - [ ] myagv_cartographer
-- [ ] navigation2
+- [ ] slam_toolbox
+- [ ] slam_gmapping
+- [x] navigation2
 - [x] ydlidar_ros2_driver
 - [ ] Gazebo simulation
 
