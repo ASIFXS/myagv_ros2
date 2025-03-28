@@ -9,7 +9,7 @@ ROS2 packages for myAGV
 - [x] myagv_odometry
 - [ ] myagv_cartographer
 - [ ] slam_toolbox
-- [ ] slam_gmapping
+- [x] slam_gmapping
 - [x] navigation2
 - [x] ydlidar_ros2_driver
 - [ ] Gazebo simulation
