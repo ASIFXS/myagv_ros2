@@ -57,7 +57,7 @@ ament_target_dependencies(slam_gmapping
 install(TARGETS slam_gmapping
         DESTINATION lib/${PROJECT_NAME})
 
-install(DIRECTORY launch
+install(DIRECTORY launch rviz
 	    DESTINATION share/${PROJECT_NAME})
 
 ament_package()
