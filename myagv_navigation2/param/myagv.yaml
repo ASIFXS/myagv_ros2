@@ -1,10 +1,10 @@
 amcl:
   ros__parameters:
     use_sim_time: False
-    alpha1: 0.9
-    alpha2: 0.1
-    alpha3: 0.05
-    alpha4: 0.01
+    alpha1: 0.4
+    alpha2: 0.3
+    alpha3: 0.1
+    alpha4: 0.1
     alpha5: 0.04
     base_frame_id: "base_footprint"
     beam_skip_distance: 0.5
@@ -21,8 +21,8 @@ amcl:
     max_particles: 2000
     min_particles: 500
     odom_frame_id: "odom"
-    pf_err: 0.02
-    pf_z: 0.85
+    pf_err: 0.05
+    pf_z: 0.99
     recovery_alpha_fast: 0.0
     recovery_alpha_slow: 0.0
     resample_interval: 2
@@ -30,7 +30,7 @@ amcl:
     save_pose_rate: 0.5
     sigma_hit: 0.02
     tf_broadcast: true
-    transform_tolerance: 0.5
+    transform_tolerance: 0.3
     update_min_a: 0.06
     update_min_d: 0.025
     z_hit: 0.7
@@ -197,8 +197,8 @@ local_costmap:
       plugins: ["voxel_layer", "inflation_layer"]
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 3.0
-        inflation_radius: 0.55
+        cost_scaling_factor: 5.0
+        inflation_radius: 0.25
       voxel_layer:
         plugin: "nav2_costmap_2d::VoxelLayer"
         enabled: True
@@ -232,8 +232,8 @@ local_costmap:
 global_costmap:
   global_costmap:
     ros__parameters:
-      update_frequency: 1.0
-      publish_frequency: 1.0
+      update_frequency: 0.3
+      publish_frequency: 0.3
       global_frame: map
       robot_base_frame: base_footprint
       use_sim_time: False
@@ -260,8 +260,8 @@ global_costmap:
         map_subscribe_transient_local: True
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 3.0
-        inflation_radius: 0.55
+        cost_scaling_factor: 5.0
+        inflation_radius: 0.25
       always_send_full_costmap: True
   global_costmap_client:
     ros__parameters:
