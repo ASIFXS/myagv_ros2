@@ -46,7 +46,7 @@ Build workspace
 ```
 cd ~/myagv_ros2
 
-colcon build --symlink-install
+colcon build
 ```
 
 Setup the workspace
@@ -62,6 +62,6 @@ git pull
 
 cd ..
 
-colcon build --symlink-install
+colcon build
 ```
 
