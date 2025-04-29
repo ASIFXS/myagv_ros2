@@ -1,6 +1,14 @@
 # myagv_ros2
 ROS2 packages for myAGV
 
+> Software environment for Jetson Nano
+
+```
+ros2 galactic
+Jetpack 4.6
+Opencv：4.8.0 with CUDA：YES
+```
+
 # Checklist
 
 - [x] myagv_description
