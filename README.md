@@ -1,6 +1,12 @@
 # myagv_ros2
 ROS2 packages for myAGV
 
+##Version
+V0.1.7：</br>
+1、adapter firmware V1.2:</br>
+  1.1、add setAutoReport API & open slam-open auto report;close slam-close auto report</br>
+  1.2、modify move cmd 
+
 > Software environment for Jetson Nano
 
 ```
